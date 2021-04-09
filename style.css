@@ -274,10 +274,11 @@ body {
     border-radius: 10px;
     min-height: 30px;
     vertical-align: middle;
-    padding: 12px 20px;
+    padding: 12px 22px;
     outline: none !important;
     cursor: pointer;
     font-size: 18px;
+    text-transform: capitalize;
 
 }
 .button::before {
@@ -302,18 +303,18 @@ body {
     background: linear-gradient(to bottom, #ffd78e, #ffc55b);
     box-shadow: 0 0 5px 2px white, 0 0 15px #ffe9c1, 0 3px 5px -2px rgba(0, 0, 0, 0.2);
 }
-.btn-kick::after{
+.button::after{
     content: attr(data-counter);
     position: absolute;
     top: -7px;
-    right: -7px;
+    left: calc(100% - 16px);
     display: block;
-    width: 16px;
+    min-width: 16px;
     height: 16px;
     font-size: 14px;
     background-color: #ffffff !important;
-    padding: 1px;
-    border-radius: 50%;
+    padding: 3px;
+    border-radius: 16px;
     border: 2px solid #ffc55b;
     box-shadow: 0 0 0 3px #ffffff !important;
 }

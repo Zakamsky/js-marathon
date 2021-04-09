@@ -1,56 +1,70 @@
 import Pokemon from "./pokemon.js";
-import random from "./util.js";
+import { pokemons }from "./pokemons.js";
+import { createEl, random, $getElById, $getElBySelector, $getElBySelectorAll } from "./util.js";
+
+
+const $control = $getElBySelector('.control')
+
+let playerPokemon = pokemons[random(pokemons.length -1)]
+let enemyPokemon = pokemons[random(pokemons.length -1)]
 
 const player = new Pokemon({
-    name: 'Pickachu',
-    type: 'electric',
-    hp: 500,
-    selectors: 'character',
+    ...playerPokemon,
+    selectors: 'player1',
 })
-
-const enemy = new Pokemon({
-    name: 'Charmander',
-    type: 'fire',
-    hp: 450,
-    selectors: 'enemy',
-})
-
 console.log(player)
-console.log(enemy)
 
+const initEnemy = (pokemon) => {
+    return new Pokemon({
+        ...pokemon,
+        selectors: 'player2',
+    })
+}
 
-const $getElById = (id) => document.getElementById(id);
-const $getElBySelector = (selector) => document.querySelector(selector)
-const $getElBySelectorAll = (selector) => document.querySelectorAll(selector)
+let enemy = initEnemy(enemyPokemon)
 
+player.attacks.map(item => {
+    const btnInnerText = `${item.name} (${item.minDamage}-${item.maxDamage})`
+    const $btn = createEl( 'button', 'button', btnInnerText )
+    $btn.dataset.counter = item.maxCount
+    const btnCounter = countButton(item.maxCount, $btn)
+    $btn.addEventListener('click', () => {
 
-const $btn = $getElById('btn-kick')
-const $buttons = $getElBySelectorAll('.btn-kick')
-const $logs = $getElById('logs')
-
-$buttons.forEach( $btn => {
-
-    const btnCounter = countButton(8, $btn)
-
-    $btn.addEventListener('click', function() {
-
-        let randPerson = random(10) % 2 === 0 ? player : enemy
-        randPerson.changeHP(random(80, 20), function(count, looser) {
-            if (randPerson === enemy) {
-                generatedLog( enemy, player, count, looser )
-            } else {
-                generatedLog( player, enemy, count, looser )
-            }
-            if (looser) {
-                $buttons.forEach(btn => {
-                    btn.disabled = true
-                })
+        enemy.changeHP(random( item.maxDamage, item.minDamage), function(count, looser) {
+            generatedLog( enemy, player, count, looser )
+            if(looser) {
+                looser = false
+                enemy = initEnemy( pokemons[random(pokemons.length -1)] )
             }
         })
 
-         btnCounter()
+        btnCounter()
+
+        player.changeHP(random( enemy.attacks[0].maxDamage, enemy.attacks[0].minDamage), function(count, looser) {
+
+            if(looser) {
+                playerLoose(looser)
+            } else {
+                generatedLog( player, enemy, count, looser )
+            }
+        } )
+
     })
+    $control.appendChild($btn)
 })
+
+
+function playerLoose(name) {
+    const $buttons = $getElBySelectorAll('.button')
+    $buttons.forEach( $btn => $btn.disabled = true)
+
+    const $logs = $getElById('logs')
+    const $h2 = document.createElement('h2')
+    $h2.innerText = 'GAME OVER!!!'
+    $logs.insertBefore($h2, $logs.children[0])
+
+}
+
 
 function countButton(count = 6, el) {
     el.dataset.counter = '' + count

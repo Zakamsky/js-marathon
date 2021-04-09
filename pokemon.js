@@ -1,25 +1,30 @@
 class Selectors {
     constructor(name) {
+        this.elName = document.getElementById(`name-${name}`)
+        this.elImg = document.querySelector(`.${name} .sprite`)
         this.elHP = document.getElementById(`health-${name}`)
         this.elProgressBar = document.getElementById(`progressbar-${name}`)
     }
 }
 
 class Pokemon extends Selectors{
-    constructor({name, hp, type, selectors}) {
+    constructor({ name, hp, type, img, selectors, attacks = [] }) {
         super(selectors)
         this.name = name
         this.hp = {
             current: hp,
             total: hp,
         }
-        this.type = type
-        this.renderHealth()
+        this.img = img
+        this.type = type,
+        this.attacks = attacks,
+        this.renderPokemon()
     }
 
-    renderHealth = () => {
+    renderPokemon = () => {
         this.renderHPLife()
         this.renderProgressBar()
+        this.renderFaceName()
     }
 
     renderHPLife = () => {
@@ -31,6 +36,20 @@ class Pokemon extends Selectors{
         const {hp: {current, total}, elProgressBar} = this
         let progressWidth = current / (total / 100)
         elProgressBar.style.width = progressWidth + '%'
+        if (progressWidth < 60 && progressWidth > 20 ) {
+            elProgressBar.classList.add('low')
+        } else if (progressWidth <= 20) {
+            elProgressBar.classList.add('critical')
+        } else {
+            elProgressBar.classList.remove('low', 'critical')
+        }
+
+        //В методе renderProgressbarHP допиши условия, если жизней меньше 60 но больше 20 то добавляй класс .low, если меньше 20 то класс .critical
+    }
+    renderFaceName = () => {
+        const { elName, elImg } = this
+        elName.innerText = this.name
+        elImg.src = this.img
     }
 
     changeHP = (count, cb) => {
@@ -41,7 +60,7 @@ class Pokemon extends Selectors{
             this.hp.current = 0
             looser = this.name
         }
-        this.renderHealth()
+        this.renderPokemon()
         cb && cb(count, looser)
     }
 }
