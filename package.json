@@ -1,0 +1,21 @@
+{
+  "name": "jsMarathon",
+  "version": "1.0.0",
+  "description": "the project serves to practice and consolidate knowledge of the basics of Java script",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server --files \"*/*.**\" --watch \"*/*.**\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zakamsky/js-marathon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zakamsky/js-marathon/issues"
+  },
+  "homepage": "https://github.com/Zakamsky/js-marathon#readme"
+}
