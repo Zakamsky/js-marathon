@@ -2,18 +2,20 @@ class Pokefetch {
     constructor(url){
         this.url = url
     }
-    // getPokemons({name, id, random}) {
-    getPokemons = (options) => {
-        let fetchUrl = this.url + 'pokemons'
-
-        if (options.name) { fetchUrl += `` }
-        if (name || id || random) {        }
-        if (name || id || random) {        }
-        return fetch()
-        console.log(options, '## options: ', this.url, '# url' );
+    getPokemonRandom = async () => {
+        return await fetch(`${this.url}pokemons?random=true`).then(res => res.json())
     }
-    getPOkemonsAll = async () => {
+    getPokemonByID = async (id) => {
+        return await fetch(`${this.url}pokemons?id=${id}`).then(res => res.json())
+    }
+    getPokemonByName = async (name) => {
+        return await fetch(`${this.url}pokemons?name=${name}`).then(res => res.json())
+    }
+    getPokemonsAll = async () => {
         return await fetch(`${this.url}pokemons`).then(res => res.json())
+    }
+    getFight = async (player1id, attackId, player2id) => {
+        return await fetch(`${this.url}fight?player1id=${player1id}&attackId=${attackId}&player2id=${player2id}`).then(res => res.json())
     }
 }
 

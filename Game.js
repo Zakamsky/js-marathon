@@ -1,4 +1,3 @@
-import {pokemons} from "./pokemons.js";
 import {$getElById, $getElBySelectorAll, createEl, random} from "./util.js";
 import {$control} from "./elements.js";
 import Pokemon from "./pokemon.js";
@@ -9,12 +8,10 @@ export default class Game {
 
     }
     startGame = async () => {
-        this.player = this.initPokemon(pokemons[random(pokemons.length -1)], 1)
-        this.enemy = this.initPokemon(pokemons[random(pokemons.length -1)], 2)
+        this.player = this.initPokemon(await pokeFetch.getPokemonRandom(), 1)
+        this.enemy = this.initPokemon(await pokeFetch.getPokemonRandom(), 2)
         this.cleanControls()
-        // this.createPlayers()
         this.createWeapons()
-        console.log( await pokeFetch.getPOkemonsAll())
     }
     initPokemon = (pokemon, num = 2) => {
         return new Pokemon({
@@ -29,20 +26,22 @@ export default class Game {
             const $btn = createEl( 'button', 'button', btnInnerText )
             $btn.dataset.counter = item.maxCount
             const btnCounter = countButton(item.maxCount, $btn)
-            $btn.addEventListener('click', () => {
-                this.enemy.changeHP(random( item.maxDamage, item.minDamage), (count, looser, thisObj) => {
+            $btn.addEventListener('click', async () => {
 
-                    // console.log(this, '## this is this is a:')
+                const {kick} = await pokeFetch.getFight(this.player.id, item.id, this.enemy.id)
+
+                this.enemy.changeHP(kick.player2, async (count, looser, thisObj) => {
+
                     generatedLog( this.enemy, this.player, count, looser )
                     if(looser) {
                         looser = false
-                        this.enemy = this.initPokemon( pokemons[random(pokemons.length -1)] )
+                        this.enemy = this.initPokemon( await pokeFetch.getPokemonRandom() )
                     }
                 })
 
                 btnCounter()
 
-                this.player.changeHP(random( this.enemy.attacks[0].maxDamage, this.enemy.attacks[0].minDamage), (count, looser) => {
+                this.player.changeHP(kick.player1, (count, looser) => {
 
                     if(looser) {
                         playerLoose(looser)
